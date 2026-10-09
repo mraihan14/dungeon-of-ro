@@ -230,7 +230,7 @@ class Screen : protected cave{
         }
         void start_scene(){
             system("clear");
-            ifstream file("start_scene.txt");
+            ifstream file("assets/start_scene.txt");
             string s;
             while (getline(file,s)){
                 for (char c:s)cout<<c<<" ";
@@ -240,7 +240,7 @@ class Screen : protected cave{
         }
         void gameover_scene(){
             system("clear");
-            ifstream file("g_over.txt");
+            ifstream file("assets/g_over.txt");
             string s;
             while (getline(file,s)){
                 for (char c:s)cout<<c<<" ";
@@ -252,7 +252,7 @@ class Screen : protected cave{
 
         bool battle_scene(Player pl,Enemy pe){
             system("clear");
-            ifstream file("b_scene.txt");
+            ifstream file("assets/b_scene.txt");
             string s;
             desc p=pl.get_desc();
             desc e=pe.get_desc();
@@ -286,7 +286,7 @@ class Screen : protected cave{
 
         void dialoge_scene(desc npc,string dialog){
             system("clear");
-            ifstream file("duck.txt");
+            ifstream file("assets/duck.txt");
             string s;
             while (getline(file,s)){
                 for (char c:s)cout<<c<<" ";
@@ -377,7 +377,7 @@ class Game : protected Screen{
                         if (walk(command,player.px,player.py));
                         else log.push("You have tried to take that path and failed...");
                     } else if (command=="exit"){
-                        ofstream file("log.txt");
+                        ofstream file("log/log.txt");
                         while (!log.empty()){
                             file<<log.top()<<'\n';
                             log.pop();
@@ -400,7 +400,7 @@ class Game : protected Screen{
                     if (obj[player_id].hp<=0){
                         gameover_scene();
                         log.push("You died without knowing anything...");
-                        ofstream file("log.txt");
+                        ofstream file("log/log.txt");
                         while (!log.empty()){
                             file<<log.top()<<'\n';
                             log.pop();
