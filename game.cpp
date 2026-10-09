@@ -14,6 +14,11 @@ class objects{
             obj[4].sym="X";                //Mimic
             obj[4].type="enemy";
             obj[3].type="item";
+            obj[9]={9,"Kwek A Duck","npc","D"};
+            obj[9].dialoge.push_back("Kwak ? Kwak ?");
+            obj[9].dialoge.push_back(".........");
+            obj[9].dialoge.push_back("Sorry I thought you were A duck too...");
+            obj[9].dialoge.push_back("So silent in here right??");
         }
         struct desc{
             int id; //same with number assign at map
@@ -21,6 +26,7 @@ class objects{
             string type; // static, item, player, enemy, or npc
             string sym; // at screen
             double hp,level,hunger,stamina;
+            vector<string> dialoge;
         };
         
         map<int,desc> obj;
@@ -141,6 +147,7 @@ class cave : public objects{
             }
             place_object(3,max(3,(m+n)/3));
             place_object(4,4);
+            place_object(9,2);
         }
 
         void place_object(int id,int amount){
@@ -276,6 +283,21 @@ class Screen : protected cave{
             if (p.hp<=0)return false;
             return true;
         }
+
+        void dialoge_scene(desc npc,string dialog){
+            system("clear");
+            ifstream file("duck.txt");
+            string s;
+            while (getline(file,s)){
+                for (char c:s)cout<<c<<" ";
+                cout<<endl;
+            }
+            cout<<">> "+npc.name<<endl;
+            cout<<"==================================================================================================="<<endl;
+            cout<<dialog<<endl;
+            cout<<"==================================================================================================="<<endl;
+            file.close();
+        }
 };
 class Game : protected Screen{
     stack<string> log;
@@ -285,6 +307,8 @@ class Game : protected Screen{
             int player_id=7;
             int enemy_id=-1;
             int item_id;
+            int npc_id;
+            int cnt_dialog=0;
             int tx=-1,ty=-1;
             Enemy enemy;
             Player player;
@@ -339,11 +363,27 @@ class Game : protected Screen{
                                 item_id=obj_id;
                                 log.push("You interact with object "+obj[obj_id].name);
                                 break;
+                            } else if (obj_type=="npc"){
+                                scene=4;
+                                npc_id=obj_id;
+                                log.push("You Talked with stranger...");
+                                cnt_dialog=0;
+                                break;
+                            } else {
+                                log.push("You cant interact with this object");
                             }
                         }
                     } else if (command=="u"||command=="U"||command=="d"||command=="D"||command=="l"||command=="L"||command=="r"||command=="R"){
-                        if (walk(command,player.px,player.py))log.push("You have walked the right path.");
+                        if (walk(command,player.px,player.py));
                         else log.push("You have tried to take that path and failed...");
+                    } else if (command=="exit"){
+                        ofstream file("log.txt");
+                        while (!log.empty()){
+                            file<<log.top()<<'\n';
+                            log.pop();
+                        }
+                        file.close();
+                        return;
                     }
 
                 } else if (scene==1){
@@ -360,6 +400,12 @@ class Game : protected Screen{
                     if (obj[player_id].hp<=0){
                         gameover_scene();
                         log.push("You died without knowing anything...");
+                        ofstream file("log.txt");
+                        while (!log.empty()){
+                            file<<log.top()<<'\n';
+                            log.pop();
+                        }
+                        file.close();
                         return;
                         scene=0;
                     }
@@ -372,6 +418,20 @@ class Game : protected Screen{
                     cout<<"Sapi"<<endl;
                     maps[tx][ty]=0;
                     scene=0;
+                } else if (scene==4){
+                    maps[tx][ty]=0;
+                    if (cnt_dialog==obj[npc_id].dialoge.size()){
+                        scene=0;
+                        log.push("The conversation has ended.");
+                        continue;
+                    }
+                    dialoge_scene(obj[npc_id],obj[npc_id].dialoge[cnt_dialog]);
+                    cout<<"Type x to next "<<endl;
+                    cin>>command;
+                    log.push(obj[npc_id].name+" said "+obj[npc_id].dialoge[cnt_dialog]);
+                    if (command=="x"){
+                        cnt_dialog+=1;
+                    }
                 }
             }
         }
@@ -405,12 +465,16 @@ class Game : protected Screen{
             update_position(x,y,0);
             if ((direct=="D"||direct=="d")&&valid_move(x+1,y)){
                 x+=1;
+                log.push("You have walked to the Down path.");
             } else if ((direct=="U"||direct=="u")&&valid_move(x-1,y)){
                 x-=1;
+                log.push("You have walked to the Up path.");
             } else if ((direct=="L"||direct=="l")&&valid_move(x,y-1)){
                 y-=1;
+                log.push("You have walked to the Left path.");
             } else if ((direct=="R"||direct=="r")&&valid_move(x,y+1)){
                 y+=1;
+                log.push("You have walked to the Right path.");
             } else {
                 return false;
             }
@@ -418,7 +482,7 @@ class Game : protected Screen{
         }
 };
 int main(){
-    cout<<"WELCOME TO THE DUNGEON OF HELL >_<"<<endl;
+    cout<<"WELCOME TO THE DUNGEON OF RO >_<"<<endl;
     Game layar;
     // The prince was wake up in the forbidden world of nothing
 }
