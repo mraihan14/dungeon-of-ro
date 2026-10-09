@@ -1,0 +1,424 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class objects{
+    public :
+        objects(){
+            obj[0].name="Path";
+            obj[1].name="Wall";
+            obj[3].name="Chest";
+            obj[4].name="Chest";
+            obj[0].sym="\x1B[31m.\033[0m"; //land
+            obj[1].sym="\x1B[92m#\033[0m"; //wall
+            obj[3].sym="\x1B[33mC\033[0m"; //Chest
+            obj[4].sym="X";                //Mimic
+            obj[4].type="enemy";
+            obj[3].type="item";
+        }
+        struct desc{
+            int id; //same with number assign at map
+            string name; // Name this object
+            string type; // static, item, player, enemy, or npc
+            string sym; // at screen
+            double hp,level,hunger,stamina;
+        };
+        
+        map<int,desc> obj;
+};
+
+class cave : public objects{
+    public :
+        cave(int n,int m){
+            this->n=max(10,n);
+            this->m=max(15,m);
+            generate();
+        }
+    protected :
+        int n=20;
+        int m=50;
+        vector<vector<int>> maps;
+        vector<vector<bool>> vis;
+        void dfs(int i,int j){
+
+            if (i>=n||j>=m||i<0||j<0||vis[i][j]==1||maps[i][j]==1){
+                return;
+            }
+            vis[i][j]=1;
+            dfs(i+1,j);
+            dfs(i-1,j);
+            dfs(i,j+1);
+            dfs(i,j-1);
+        }
+        void generate(){
+            srand(time(0));
+            maps.assign(n,vector<int>(m));
+            for (int i=0;i<n;i++){
+                for (int j=0;j<m;j++){
+                    maps[i][j]=rand()%2;
+                }
+            }
+            int smoth=3;
+            int dx[8]={1,-1,0,0,1,-1,-1,1};
+            int dy[8]={0,0,1,-1,1,-1,1,-1};
+            while (smoth--){
+                for (int i=0;i<n;i++){
+                    for (int j=0;j<m;j++){
+                        int paths=0;
+                        int walls=0;
+                        if (!maps[i][j])paths+=1;
+                        else walls+=1;
+                        for (int k=0;k<8;k++){
+                            int nx=i+dx[k];
+                            int ny=j+dy[k];
+                            if (nx<0||nx>=n||ny<0||ny>=m)continue;
+                            else {
+                                if (!maps[nx][ny])paths+=1;
+                                else walls+=1;
+                            }
+                        }
+                        if (paths>walls)maps[i][j]=0;
+                        else maps[i][j]=1;
+                    }
+                }
+            }
+            struct cnt{
+                int x,y;
+            };
+            stack<cnt> connect;
+            connect.push({0,0});
+            vis.assign(n,vector<bool>(m,0));
+            for (int i=0;i<n;i++){
+                for (int j=0;j<m;j++){
+                    if (!(vis[i][j]+maps[i][j])){
+                        connect.push({i,j});
+                        dfs(i,j);
+                    }
+                }
+            }
+            // connect.push({0,0});
+            connect.push({n-1,m-1});
+            int sx=0,sy=0;
+            while (!connect.empty()){
+                stack<int> correct_path;
+                auto [x,y]=connect.top();
+                connect.pop();
+                int px=sx,py=sy;
+                while (sx!=x||sy!=y){
+                    int gnrt=rand()%2;
+                    int hx=max(-1,min(x-sx,1));
+                    int hy=max(-1,min(y-sy,1));
+                    if (sx==x){
+                        correct_path.push(hy*1);
+                        sy+=hy;
+                        continue;
+                    }
+                    else if (sy==y){
+                        correct_path.push(hx*2);
+                        sx+=hx;
+                        continue;
+                    }
+                    if (!gnrt){
+                        correct_path.push(hx*2);
+                        sx+=hx;
+                    } else {
+                        correct_path.push(hy*1);
+                        sy+=hy;
+                    }
+                }
+                maps[px][py]=0;
+                while (!correct_path.empty()){
+                    int move=correct_path.top();
+                    correct_path.pop();
+                    // cout<<move<<" ";
+                    if (move==-2||move==2)px+=move/2;
+                    else py+=move;
+                    // if (x<0||y<0||x>=n||y>=m)break;
+                    maps[px][py]=0;
+                    // if (x+1<n)maps[x+1][y]='.';
+                }
+                sx=x;
+                sy=y;
+            }
+            place_object(3,max(3,(m+n)/3));
+            place_object(4,4);
+        }
+
+        void place_object(int id,int amount){
+            int brk=0;
+            while (true){
+                brk+=1;
+                int x=rand()%n;
+                int y=rand()%m;
+                if (maps[x][y]==0){
+                    maps[x][y]=id;
+                    amount-=1;
+                }
+                if (brk>min(1000*amount,25000)||amount==0)return;
+            }
+        }
+
+};
+
+class Player : public objects{
+    public :
+        desc description;
+        void set_desc(desc o){
+            this->description=o;
+        }
+        desc get_desc(){
+            return description;
+        }
+        int px=0,py=0;
+};
+class Enemy : public objects {
+    public :
+        void set_desc(desc o){
+            this->description=o;
+        }
+        desc get_desc(){
+            return description;
+        }
+        desc description;
+};
+
+class Screen : protected cave{
+    protected :
+        Screen(): cave(25,50){};
+        void map_scene(vector<string> obj_nearby){
+            while (true){
+                system("clear");
+                for (int i=0;i<n;i++){
+                    if (i==0){
+                        for (int x=0;x<m+2;x++){
+                            cout<<"X ";
+                            //if (x==m+1)cout<<"Object Nearby";
+                        }
+                        cout<<endl;
+                    }
+                for (int j=0;j<m;j++){
+                    if (j==0)cout<<"X ";
+                    cout<<obj[maps[i][j]].sym<<" ";
+                    if (j==m-1){
+                        cout<<"X      ";
+                        if (i==1)cout<<"==================================";
+                        else if (i==2)cout<<"     Information Aoround You";
+                        else if (i==3)cout<<"==================================";
+                        else if (i>3&&i<8){
+                            string pos_desc[4]={"Left  : ","Right : ","Up    : ","Down  : "};
+                            cout<<pos_desc[i-4]<<obj_nearby[i-4];
+                        } else if (i==9){
+                            cout<<"\x1B[31mtype i to Interract with object\033[0m";
+                        }
+                    }
+                } cout<<endl;
+                if (i==n-1){
+                    for (int x=0;x<m+2;x++)cout<<"X ";
+                    cout<<endl;
+                }
+            }
+            //generate();
+            cout<<endl;
+            break;
+            }
+        }
+        void start_scene(){
+            system("clear");
+            ifstream file("start_scene.txt");
+            string s;
+            while (getline(file,s)){
+                for (char c:s)cout<<c<<" ";
+                cout<<endl;
+            }
+            file.close();
+        }
+        void gameover_scene(){
+            system("clear");
+            ifstream file("g_over.txt");
+            string s;
+            while (getline(file,s)){
+                for (char c:s)cout<<c<<" ";
+                cout<<endl;
+            }
+            cout<<"THe WARrior Try His BESt."<<endl;
+            file.close();
+        }
+
+        bool battle_scene(Player pl,Enemy pe){
+            system("clear");
+            ifstream file("b_scene.txt");
+            string s;
+            desc p=pl.get_desc();
+            desc e=pe.get_desc();
+            vector<string> info_text={
+                "============================",
+                "Your Status, "+p.name,
+                "Hp       : "+to_string(p.hp),
+                "Level    : "+to_string(p.level),
+                "Stamina  : "+to_string(p.stamina),
+                "Hunger   : "+to_string(p.hunger),
+                "============================",
+                "Enemy Status, "+e.name,
+                "Hp       : "+to_string(e.hp),
+                "Level    : "+to_string(e.level),
+                "Stamina  : "+to_string(e.stamina),
+                "Hunger   : "+to_string(e.hunger)
+
+            };
+            int cnt=0;
+            while (getline(file,s)){
+                for (char c:s)cout<<c<<" ";
+                if (cnt<info_text.size())cout<<info_text[cnt];
+                cnt+=1;
+                cout<<endl;
+            }
+            cout<<"\nType 1 to Attack (Stamina -10)\nType 2 to use Punch (Stamina -50)\n";
+            file.close();
+            if (p.hp<=0)return false;
+            return true;
+        }
+};
+class Game : protected Screen{
+    stack<string> log;
+    public :
+        Game(){
+            string name;
+            int player_id=7;
+            int enemy_id=-1;
+            int item_id;
+            int tx=-1,ty=-1;
+            Enemy enemy;
+            Player player;
+            player.set_desc({player_id,name,"player","K",100,1,100,100});
+            obj[player.description.id]=player.get_desc();
+            int scene=-1;
+            string command;
+            update_position(player.px,player.py,player_id);
+            while (true){
+                if (scene==-1){
+                    while (true){
+                        system("clear");
+                        start_scene();
+                        cout<<"Welcome To Dungeon Of RO"<<endl;
+                        cout<<"Enter Your Name Please : (max 10 Character)"<<endl;
+                        getline(cin>>ws,name);
+                        if (name.size()<=10){
+                            log.push("You wake up inside a mysterious cave. The only thing you remember was your Name, "+name+".");
+                            break;
+                        };
+                    }
+                    scene=0;
+                } else if (scene==0){
+                    update_position(player.px,player.py,player_id);
+                    vector<string> obj_nearby_player=check_object_nearby("get_obj",player.px,player.py);
+                    map_scene(obj_nearby_player);
+                    cout<<name<<endl;
+                    cout<<"[LOG] : "<<log.top()<<endl;
+                    cout<<"Type u to move up, d to move down, l to move left and r to move right"<<endl;
+                    cout<<"Command : ";
+                    cin>>command;
+                    if (command=="i"){
+                        int dx[4]={0,0,-1,1};
+                        int dy[4]={-1,1,0,0};
+                        int cnt=0;
+                        vector<string> get_obj_id=check_object_nearby("get_id",player.px,player.py);
+                        for (string s:get_obj_id){
+                            tx=player.px+dx[cnt];
+                            ty=player.py+dy[cnt];
+                            cnt+=1;
+                            if (s=="-1")continue;
+                            int obj_id=stoi(s);
+                            string obj_type=obj[obj_id].type;
+                            if (obj_type=="enemy"){
+                                enemy_id=obj_id;
+                                enemy.set_desc({obj_id,obj[obj_id].name,obj[obj_id].type,obj[obj_id].sym,100,2,10,50});
+                                scene=1;
+                                log.push("You try to fight with "+obj[obj_id].name);
+                                break;
+                            } else if (obj_type=="item"){
+                                scene=3;
+                                item_id=obj_id;
+                                log.push("You interact with object "+obj[obj_id].name);
+                                break;
+                            }
+                        }
+                    } else if (command=="u"||command=="U"||command=="d"||command=="D"||command=="l"||command=="L"||command=="r"||command=="R"){
+                        if (walk(command,player.px,player.py))log.push("You have walked the right path.");
+                        else log.push("You have tried to take that path and failed...");
+                    }
+
+                } else if (scene==1){
+                    if (battle_scene(player,enemy));
+                    else gameover_scene();
+                    cout<<name<<endl;
+                    cout<<"Your move  : ";
+                    cin>>command;
+                    if (command=="1"){
+                        enemy.description.hp-=20;
+                        obj[player_id].hp-=10;
+                        obj[player_id].stamina-=10;
+                    }
+                    if (obj[player_id].hp<=0){
+                        gameover_scene();
+                        log.push("You died without knowing anything...");
+                        return;
+                        scene=0;
+                    }
+                    if (enemy.description.hp<=0){
+                        maps[tx][ty]=0;
+                        log.push("You have won against "+enemy.description.name);
+                        scene=0;
+                    }
+                } else if (scene==3){
+                    cout<<"Sapi"<<endl;
+                    maps[tx][ty]=0;
+                    scene=0;
+                }
+            }
+        }
+        vector<string> check_object_nearby(string task,int x,int y){
+            int dx[4]={0,0,-1,1};
+            int dy[4]={-1,1,0,0};
+            vector<string> obj_nearby={"","","",""};
+            vector<string> obj_nearby_id={"-1","-1","-1","-1"};
+            for (int i=0;i<4;i++){
+                int nx=x+dx[i];
+                int ny=y+dy[i];
+                if (nx<0||nx>=n||ny<0||ny>=m){
+                    obj_nearby[i]="something you cant see...";
+                    continue;
+                }
+                obj_nearby[i]=obj[maps[nx][ny]].name;
+                obj_nearby_id[i]=to_string(maps[nx][ny]);
+            }
+            if (task=="get_obj")return obj_nearby;
+            else if (task=="get_id")return obj_nearby_id;
+            return {"","","",""};
+        }
+        void update_position(int &x, int &y,int id){
+            maps[x][y]=obj[id].id;
+        }
+        bool valid_move(int px, int py){
+            if (px<0||px>=n||py<0||py>=m||maps[px][py]!=0)return false;
+            else return true;
+        }
+        bool walk(string direct,int &x,int &y){
+            update_position(x,y,0);
+            if ((direct=="D"||direct=="d")&&valid_move(x+1,y)){
+                x+=1;
+            } else if ((direct=="U"||direct=="u")&&valid_move(x-1,y)){
+                x-=1;
+            } else if ((direct=="L"||direct=="l")&&valid_move(x,y-1)){
+                y-=1;
+            } else if ((direct=="R"||direct=="r")&&valid_move(x,y+1)){
+                y+=1;
+            } else {
+                return false;
+            }
+            return true;
+        }
+};
+int main(){
+    cout<<"WELCOME TO THE DUNGEON OF HELL >_<"<<endl;
+    Game layar;
+    // The prince was wake up in the forbidden world of nothing
+}
