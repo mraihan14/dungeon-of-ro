@@ -4,6 +4,7 @@ using namespace std;
 class objects{
     public :
         objects(){
+            obj[-1].name="+";
             obj[0].name="Path";
             obj[1].name="Wall";
             obj[3].name="Chest";
@@ -42,8 +43,10 @@ class cave : public objects{
     protected :
         int n=20;
         int m=50;
+        int maps_filter=1;
         vector<vector<int>> maps;
         vector<vector<bool>> vis;
+        vector<vector<int>> filter;//Experimental
         void dfs(int i,int j){
 
             if (i>=n||j>=m||i<0||j<0||vis[i][j]==1||maps[i][j]==1){
@@ -58,6 +61,7 @@ class cave : public objects{
         void generate(){
             srand(time(0));
             maps.assign(n,vector<int>(m));
+            filter.assign(n,vector<int>(m,maps_filter));
             for (int i=0;i<n;i++){
                 for (int j=0;j<m;j++){
                     maps[i][j]=rand()%2;
@@ -197,16 +201,17 @@ class Screen : protected cave{
                 for (int i=0;i<n;i++){
                     if (i==0){
                         for (int x=0;x<m+2;x++){
-                            cout<<"X ";
+                            cout<<"= ";
                             //if (x==m+1)cout<<"Object Nearby";
                         }
                         cout<<endl;
                     }
                 for (int j=0;j<m;j++){
-                    if (j==0)cout<<"X ";
-                    cout<<obj[maps[i][j]].sym<<" ";
+                    if (j==0)cout<<"= ";
+                    if (filter[i][j]==1&&maps_filter==1)cout<<"X ";
+                    else cout<<obj[maps[i][j]].sym<<" ";
                     if (j==m-1){
-                        cout<<"X      ";
+                        cout<<"=      ";
                         if (i==1)cout<<"==================================";
                         else if (i==2)cout<<"     Information Aoround You";
                         else if (i==3)cout<<"==================================";
@@ -219,7 +224,7 @@ class Screen : protected cave{
                     }
                 } cout<<endl;
                 if (i==n-1){
-                    for (int x=0;x<m+2;x++)cout<<"X ";
+                    for (int x=0;x<m+2;x++)cout<<"= ";
                     cout<<endl;
                 }
             }
@@ -339,6 +344,15 @@ class Game : protected Screen{
                     scene=0;
                 } else if (scene==0){
                     update_position(player.px,player.py,player_id);
+                    struct pos_f{
+                        int x,y;
+                    };
+                    int x=player.px;
+                    int y=player.py;
+                    vector<pos_f> f={{x,y},{x+1,y},{x-1,y},{x,y+1},{x,y-1},{x+1,y+1},{x+1,y-1},{x-1,y+1},{x-1,y-1},{x+2,y},{x-2,y},{x,y+2},{x,y-2}};
+                    for (auto [nx,ny]:f){
+                        if (valid_move_filter(nx,ny,1))filter[nx][ny]=0;
+                    }
                     vector<string> obj_nearby_player=check_object_nearby("get_obj",player.px,player.py);
                     map_scene(obj_nearby_player);
                     cout<<name<<endl;
@@ -390,6 +404,10 @@ class Game : protected Screen{
                         }
                         file.close();
                         return;
+                    } else if (command=="[filter_off]"){
+                        maps_filter=0;
+                    } else if (command=="[filter_on]"){
+                        maps_filter=1;
                     }
 
                 } else if (scene==1){
@@ -463,22 +481,27 @@ class Game : protected Screen{
         void update_position(int &x, int &y,int id){
             maps[x][y]=obj[id].id;
         }
-        bool valid_move(int px, int py){
-            if (px<0||px>=n||py<0||py>=m||maps[px][py]!=0)return false;
+        bool valid_move(int px, int py,int id){
+            if (px<0||px>=n||py<0||py>=m||maps[px][py]!=id)return false;
+            else return true;
+        }
+        bool valid_move_filter(int px, int py,int id){
+            if (px<0||px>=n||py<0||py>=m||filter[px][py]!=id)return false;
             else return true;
         }
         bool walk(string direct,int &x,int &y){
             update_position(x,y,0);
-            if ((direct=="D"||direct=="d")&&valid_move(x+1,y)){
+
+            if ((direct=="D"||direct=="d")&&valid_move(x+1,y,0)){
                 x+=1;
                 log.push("You have walked to the Down path.");
-            } else if ((direct=="U"||direct=="u")&&valid_move(x-1,y)){
+            } else if ((direct=="U"||direct=="u")&&valid_move(x-1,y,0)){
                 x-=1;
                 log.push("You have walked to the Up path.");
-            } else if ((direct=="L"||direct=="l")&&valid_move(x,y-1)){
+            } else if ((direct=="L"||direct=="l")&&valid_move(x,y-1,0)){
                 y-=1;
                 log.push("You have walked to the Left path.");
-            } else if ((direct=="R"||direct=="r")&&valid_move(x,y+1)){
+            } else if ((direct=="R"||direct=="r")&&valid_move(x,y+1,0)){
                 y+=1;
                 log.push("You have walked to the Right path.");
             } else {
