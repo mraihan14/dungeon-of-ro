@@ -312,8 +312,7 @@ class Game : protected Screen{
             int tx=-1,ty=-1;
             Enemy enemy;
             Player player;
-            player.set_desc({player_id,name,"player","K",100,1,100,100});
-            obj[player.description.id]=player.get_desc();
+            string player_sym;
             int scene=-1;
             string command;
             update_position(player.px,player.py,player_id);
@@ -329,7 +328,14 @@ class Game : protected Screen{
                             log.push("You wake up inside a mysterious cave. The only thing you remember was your Name, "+name+".");
                             break;
                         };
+                        
                     }
+                    string f_let="";
+                    f_let+=name[0];
+                    player_sym="\033[1;34m"+f_let+"\033[0m";
+
+                    player.set_desc({player_id,name,"player",player_sym,100,1,100,100});
+                    obj[player.description.id]=player.get_desc();
                     scene=0;
                 } else if (scene==0){
                     update_position(player.px,player.py,player_id);
@@ -483,6 +489,6 @@ class Game : protected Screen{
 };
 int main(){
     cout<<"WELCOME TO THE DUNGEON OF RO >_<"<<endl;
-    Game layar;
+    Game game_of_ro;
     // The prince was wake up in the forbidden world of nothing
 }
