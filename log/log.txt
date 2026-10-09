@@ -1,15 +1,14 @@
-You died without knowing anything...
-You Attack Chest, your stamina -10, damage 20
- and enemy attack you, hp -10
-You Attack Chest, your stamina -10, damage 20
- and enemy attack you, hp -10
-You Attack Chest, your stamina -10, damage 20
- and enemy attack you, hp -10
-You Attack Chest, your stamina -10, damage 20
- and enemy attack you, hp -10
-You Attack Chest, your stamina -10, damage 20
- and enemy attack you, hp -10
-You try to fight with Chest
+The conversation has ended.
+Kwek A Duck said Kwek Kwek Kwek Kwek Kwek
+Kwek A Duck said -If you think soo, okay then
+Kwek A Duck said -How?? So silent here....
+Kwek A Duck said +Nice to meet you 
+Kwek A Duck said +Thanks you agree with it, so your name its ?
+Kwek A Duck said ?Soo silent in here right??
+Kwek A Duck said Sorry I thought you were A duck too...
+Kwek A Duck said .........
+Kwek A Duck said Kwak ? Kwak ?
+You Talked with stranger...
 You cant interact with this object
 You have walked to the Right path.
 You have walked to the Right path.
@@ -19,53 +18,37 @@ You have walked to the Right path.
 You have walked to the Right path.
 You have walked to the Right path.
 You have walked to the Right path.
-You have walked to the Down path.
-You have walked to the Down path.
-You have walked to the Down path.
-You have walked to the Down path.
-You have walked to the Down path.
-You have walked to the Down path.
-You have walked to the Down path.
-You have walked to the Down path.
-You have walked to the Down path.
-You have walked to the Down path.
-You have walked to the Down path.
 You opened a chest and got Potion, adn then use it, your hp now full
 You interact with object Chest
 You cant interact with this object
 You have walked to the Right path.
 You have walked to the Right path.
-You have won against Chest
-You Attack Chest, your stamina -10, damage 20
- and enemy attack you, hp -10
-You Attack Chest, your stamina -10, damage 20
- and enemy attack you, hp -10
-You Attack Chest, your stamina -10, damage 20
- and enemy attack you, hp -10
-You Attack Chest, your stamina -10, damage 20
- and enemy attack you, hp -10
-You Attack Chest, your stamina -10, damage 20
- and enemy attack you, hp -10
-You try to fight with Chest
-You have walked to the Left path.
-You have walked to the Left path.
-You have walked to the Down path.
-You have walked to the Left path.
+You have walked to the Right path.
+You have walked to the Right path.
+You have walked to the Right path.
+You have walked to the Right path.
+You have walked to the Right path.
+You have walked to the Right path.
+You have walked to the Right path.
+You opened a chest and got Potion, adn then use it, your hp now full
+You interact with object Chest
+You cant interact with this object
+You have walked to the Right path.
+You have walked to the Right path.
+You have walked to the Right path.
 You have walked to the Right path.
 You have tried to take that path and failed...
-You have walked to the Left path.
-You have walked to the Left path.
-You have walked to the Right path.
-You have walked to the Down path.
-You have walked to the Down path.
-You have walked to the Down path.
-You have walked to the Down path.
-You have walked to the Down path.
+You have tried to take that path and failed...
+You opened a chest and got Potion, adn then use it, your hp now full
+You interact with object Chest
+You cant interact with this object
 You have walked to the Right path.
 You have walked to the Right path.
 You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
+You opened a chest and got Potion, adn then use it, your hp now full
+You interact with object Chest
+You cant interact with this object
+You have tried to take that path and failed...
 You have walked to the Right path.
 You have walked to the Right path.
 You have walked to the Right path.
@@ -73,14 +56,5 @@ You have walked to the Right path.
 You have walked to the Right path.
 You have walked to the Right path.
 You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You wake up inside a mysterious cave. The only thing you remember was your Name, ags.
+You have tried to take that path and failed...
+You wake up inside a mysterious cave. The only thing you remember was your Name, jfkdj.

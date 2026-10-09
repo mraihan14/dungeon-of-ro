@@ -19,7 +19,13 @@ class objects{
             obj[9].dialoge.push_back("Kwak ? Kwak ?");
             obj[9].dialoge.push_back(".........");
             obj[9].dialoge.push_back("Sorry I thought you were A duck too...");
-            obj[9].dialoge.push_back("So silent in here right??");
+            obj[9].dialoge.push_back("?Soo silent in here right??");
+            obj[9].dialoge.push_back("+Thank you for agree with that, so your name its "+obj[7].name+"?");
+            obj[9].dialoge.push_back("+Nice to meet you "+obj[7].name);
+            obj[9].dialoge.push_back("-How?? So silent here....");
+            obj[9].dialoge.push_back("-If you think soo, okay then");
+            obj[9].dialoge.push_back("Kwek Kwek Kwek Kwek Kwek");
+
         }
         struct desc{
             int id; //same with number assign at map
@@ -57,7 +63,7 @@ class cave : public objects{
     protected :
         int n=20;
         int m=50;
-        int maps_filter=1;
+        int maps_filter=0; //filter
         vector<vector<int>> maps;
         vector<vector<bool>> vis;
         vector<vector<int>> filter;//Experimental
@@ -165,7 +171,7 @@ class cave : public objects{
             }
             place_object(3,max(3,(m+n)/3));
             place_object(4,4);
-            place_object(9,2);
+            place_object(9,10);
         }
 
         void place_object(int id,int amount){
@@ -336,6 +342,7 @@ class Game : protected Screen{
             int npc_id;
             int cnt_dialog=0;
             int tx=-1,ty=-1;
+            char dialoge_neutral='n';
             Enemy enemy;
             Player player;
             player.add_weapon({"Mighty Sword",100,0});
@@ -409,6 +416,7 @@ class Game : protected Screen{
                                 scene=4;
                                 npc_id=obj_id;
                                 log.push("You Talked with stranger...");
+                                dialoge_neutral='n';
                                 cnt_dialog=0;
                                 break;
                             } else {
@@ -482,12 +490,30 @@ class Game : protected Screen{
                         log.push("The conversation has ended.");
                         continue;
                     }
-                    dialoge_scene(obj[npc_id],obj[npc_id].dialoge[cnt_dialog]);
-                    cout<<"Type x to next "<<endl;
-                    cin>>command;
-                    log.push(obj[npc_id].name+" said "+obj[npc_id].dialoge[cnt_dialog]);
-                    if (command=="x"){
+                    string conver=obj[npc_id].dialoge[cnt_dialog];
+                    if (conver[0]==dialoge_neutral){
                         cnt_dialog+=1;
+                        continue;
+                    }
+                    dialoge_scene(obj[npc_id],conver);
+                    if (conver[0]!='?'){
+                        cout<<"Type x to next "<<endl;
+                        cin>>command;
+                        log.push(obj[npc_id].name+" said "+conver);
+                        if (command=="x"){
+                            cnt_dialog+=1;
+                        }
+                    } else {
+                        cout<<"Type + for yes and - for no "<<endl;
+                        cin>>command;
+                        log.push(obj[npc_id].name+" ask "+conver);
+                        if (command=="+"){
+                            dialoge_neutral='-';
+                            cnt_dialog+=1;
+                        } else if (command=="-"){
+                            dialoge_neutral='+';
+                            cnt_dialog+=1;
+                        }
                     }
                 }
             }
