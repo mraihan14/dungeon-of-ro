@@ -38,12 +38,15 @@ Dungeon Of RO is a simple Command-Line Interface (CLI) game built with C++, wher
 | 30 | Represent the player with the first letter of their name | ✅ |
 | 31 | Add interactive dialogue | ❌ |
 | 32 | (exp) Cant see all maps before exploring it | ✅ |
+| 33 | Add punch skill for player | ✅ |
+| 34 | Add defense skill for enemy | ✅ |
+| 35 | Add potion (static) | ✅ |
 ## 📈 Development Summary
 
 | **Metric** | **Count** |
 |:---|:---:|
-| 📋 Total Features | 32 |
-| ✅ Completed | 18 |
+| 📋 Total Features | 35 |
+| ✅ Completed | 21 |
 | ❌ Incomplete | 14 |
-| 📊 Completion Rate | 56.25% |
-| ⏳ Remaining | 43.75% |
+| 📊 Completion Rate | 65.63% |
+| ⏳ Remaining | 34.37% |

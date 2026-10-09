@@ -255,7 +255,7 @@ class Screen : protected cave{
             file.close();
         }
 
-        bool battle_scene(Player pl,Enemy pe){
+        bool battle_scene(Player pl,Enemy pe,string log){
             system("clear");
             ifstream file("assets/b_scene.txt");
             string s;
@@ -284,6 +284,7 @@ class Screen : protected cave{
                 cout<<endl;
             }
             cout<<"\nType 1 to Attack (Stamina -10)\nType 2 to use Punch (Stamina -50)\n";
+            cout<<log<<endl;
             file.close();
             if (p.hp<=0)return false;
             return true;
@@ -411,17 +412,27 @@ class Game : protected Screen{
                     }
 
                 } else if (scene==1){
-                    if (battle_scene(player,enemy));
+                    if (battle_scene(player,enemy,log.top()));
                     else gameover_scene();
                     cout<<name<<endl;
                     cout<<"Your move  : ";
                     cin>>command;
-                    if (command=="1"){
+                    if (command=="1" && player.description.stamina-10>=0){
+                        log.push("You Attack "+enemy.description.name+", your stamina -10, damage 20\n and enemy attack you, hp -10");
                         enemy.description.hp-=20;
-                        obj[player_id].hp-=10;
-                        obj[player_id].stamina-=10;
+                        player.description.hp-=10;
+                        player.description.stamina-=10;
+                    } else if (command=="2" && player.description.stamina-50>=0){
+                        if (rand()%2){
+                            enemy.description.hp-=70;
+                            player.description.hp-=20;
+                            log.push("You Attack "+enemy.description.name+", your stamina -50, damage 70\n and enemy attack you, hp -20");
+                        } else {
+                            log.push("You Attack "+enemy.description.name+", but the enemy use defense, Your stamina -50, damage 0");
+                        }
+                        player.description.stamina-=50;
                     }
-                    if (obj[player_id].hp<=0){
+                    if (player.description.hp<=0||player.description.stamina<=0){
                         gameover_scene();
                         log.push("You died without knowing anything...");
                         ofstream file("log/log.txt");
@@ -439,7 +450,8 @@ class Game : protected Screen{
                         scene=0;
                     }
                 } else if (scene==3){
-                    cout<<"Sapi"<<endl;
+                    log.push("You opened a chest and got Potion, adn then use it, your hp now full");
+                    player.description.hp=100;
                     maps[tx][ty]=0;
                     scene=0;
                 } else if (scene==4){
