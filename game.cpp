@@ -14,7 +14,7 @@ class objects{
             obj[3].sym="\x1B[33mC\033[0m"; //Chest
             obj[4].sym="X";                //Mimic
             obj[4].type="enemy";
-            obj[3].type="item";
+            obj[3].type="object";
             obj[9]={9,"Kwek A Duck","npc","D"};
             obj[9].dialoge.push_back("Kwak ? Kwak ?");
             obj[9].dialoge.push_back(".........");
@@ -24,7 +24,7 @@ class objects{
         struct desc{
             int id; //same with number assign at map
             string name; // Name this object
-            string type; // static, item, player, enemy, or npc
+            string type; // static, object, player, enemy, or npc
             string sym; // at screen
             double hp,level,hunger,stamina;
             vector<string> dialoge;
@@ -32,7 +32,21 @@ class objects{
         
         map<int,desc> obj;
 };
-
+class Items{
+    public :
+        struct weapon{
+            string name;
+            double damage,stamina;
+        };
+        vector<weapon> get_weapon(){
+            return list_weapon;
+        }
+        void add_weapon(weapon new_weapon){
+            list_weapon.push_back(new_weapon);
+        }
+    private :
+        vector<weapon> list_weapon;
+};
 class cave : public objects{
     public :
         cave(int n,int m){
@@ -170,7 +184,7 @@ class cave : public objects{
 
 };
 
-class Player : public objects{
+class Player : public objects, public Items{
     public :
         desc description;
         void set_desc(desc o){
@@ -192,7 +206,7 @@ class Enemy : public objects {
         desc description;
 };
 
-class Screen : protected cave{
+class Screen : protected cave, public Items{
     protected :
         Screen(): cave(25,50){};
         void map_scene(vector<string> obj_nearby){
@@ -284,6 +298,12 @@ class Screen : protected cave{
                 cout<<endl;
             }
             cout<<"\nType 1 to Attack (Stamina -10)\nType 2 to use Punch (Stamina -50)\n";
+            // vector<weapon> list=pl.get_weapon();
+            // int idx=1;
+            // for (weapon wp : list){
+            //     cout<<idx<<" "<<wp.name<<endl;
+            //     idx+=1;
+            // }
             cout<<log<<endl;
             file.close();
             if (p.hp<=0)return false;
@@ -312,12 +332,13 @@ class Game : protected Screen{
             string name;
             int player_id=7;
             int enemy_id=-1;
-            int item_id;
+            int object_id;
             int npc_id;
             int cnt_dialog=0;
             int tx=-1,ty=-1;
             Enemy enemy;
             Player player;
+            player.add_weapon({"Mighty Sword",100,0});
             string player_sym;
             int scene=-1;
             string command;
@@ -379,9 +400,9 @@ class Game : protected Screen{
                                 scene=1;
                                 log.push("You try to fight with "+obj[obj_id].name);
                                 break;
-                            } else if (obj_type=="item"){
+                            } else if (obj_type=="object"){
                                 scene=3;
-                                item_id=obj_id;
+                                object_id=obj_id;
                                 log.push("You interact with object "+obj[obj_id].name);
                                 break;
                             } else if (obj_type=="npc"){

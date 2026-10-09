@@ -1,4 +1,4 @@
-# 🚧 Work in Progress (W.I.P.) Dungeon Of RO
+# 🚧 Work in Progress (W.I.P.) — Dungeon Of RO
 
 Dungeon Of RO is a simple Command-Line Interface (CLI) game built with C++, where the player is trapped inside a mysterious cave. To survive, the player must fight enemies and make use of the available resources within the cave.
 
@@ -37,16 +37,18 @@ Dungeon Of RO is a simple Command-Line Interface (CLI) game built with C++, wher
 | 29 | Add a Dialogue scene | ✅ |
 | 30 | Represent the player with the first letter of their name | ✅ |
 | 31 | Add interactive dialogue | ❌ |
-| 32 | (exp) Cant see all maps before exploring it | ✅ |
-| 33 | Add punch skill for player | ✅ |
-| 34 | Add defense skill for enemy | ✅ |
-| 35 | Add potion (static) | ✅ |
+| 32 | (Experimental) Hide unexplored areas of the map | ✅ |
+| 33 | Add a punch skill for the player | ✅ |
+| 34 | Add a defense skill for enemies | ✅ |
+| 35 | Add static potions | ✅ |
+| 36 | Make items a separate class from the object class | ✅ |
+
 ## 📈 Development Summary
 
 | **Metric** | **Count** |
 |:---|:---:|
-| 📋 Total Features | 35 |
-| ✅ Completed | 21 |
+| 📋 Total Features | 36 |
+| ✅ Completed | 22 |
 | ❌ Incomplete | 14 |
-| 📊 Completion Rate | 65.63% |
-| ⏳ Remaining | 34.37% |
+| 📊 Completion Rate | 61.11% |
+| ⏳ Remaining | 38.89% |
