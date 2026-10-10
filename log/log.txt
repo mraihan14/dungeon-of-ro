@@ -1,60 +1,21 @@
+You died without knowing anything...
+You Attack Chest, but the enemy use defense, Your stamina -50, damage 0
+You Attack Chest, your stamina -50, damage 70
+ and enemy attack you, hp -20
+You try to fight with Chest
+You cant interact with this object
+You cant interact with this object
+You have walked to the Right path.
+You have walked to the Right path.
+You have walked to the Right path.
 The conversation has ended.
-Kwek A Duck said Kwek Kwek Kwek Kwek Kwek
-Kwek A Duck said -If you think soo, okay then
-Kwek A Duck said -How?? So silent here....
-Kwek A Duck said +Nice to meet you 
-Kwek A Duck said +Thanks you agree with it, so your name its ?
-Kwek A Duck said ?Soo silent in here right??
-Kwek A Duck said Sorry I thought you were A duck too...
-Kwek A Duck said .........
-Kwek A Duck said Kwak ? Kwak ?
-You Talked with stranger...
-You cant interact with this object
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You opened a chest and got Potion, adn then use it, your hp now full
-You interact with object Chest
-You cant interact with this object
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You opened a chest and got Potion, adn then use it, your hp now full
-You interact with object Chest
-You cant interact with this object
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have tried to take that path and failed...
-You have tried to take that path and failed...
-You opened a chest and got Potion, adn then use it, your hp now full
-You interact with object Chest
-You cant interact with this object
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You opened a chest and got Potion, adn then use it, your hp now full
-You interact with object Chest
-You cant interact with this object
-You have tried to take that path and failed...
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have walked to the Right path.
-You have tried to take that path and failed...
-You wake up inside a mysterious cave. The only thing you remember was your Name, jfkdj.
+The Mysterious Figure said we are really proud of you!
+The Mysterious Figure said If you want to go outside find the Portal (F)
+The Mysterious Figure said +Interesting, i hope you enjoy your journey!
+The Mysterious Figure ask ?Are you agree with That?
+The Mysterious Figure ask ?Are you agree with That?
+The Mysterious Figure said And The king ask You to explore this dungeon
+The Mysterious Figure said This dungeons somehow spawned at our kindom
+The Mysterious Figure said The kingdom needs you
+The Mysterious Figure said Finally You Wake Up
+You wake up inside a mysterious cave. The only thing you remember was your Name, sdgsah.

@@ -12,7 +12,7 @@ class objects{
             obj[0].sym="\x1B[31m.\033[0m"; //land
             obj[1].sym="\x1B[92m#\033[0m"; //wall
             obj[3].sym="\x1B[33mC\033[0m"; //Chest
-            obj[4].sym="X";                //Mimic
+            obj[4].sym="C";                //Mimic
             obj[4].type="enemy";
             obj[3].type="object";
             obj[9]={9,"Kwek A Duck","npc","D"};
@@ -29,6 +29,19 @@ class objects{
             obj[6].name="Finish Portal";
             obj[6].type="portal";
 
+            obj[-999].id=-999;
+            obj[-999].type="npc";
+            obj[-999].sym="M";
+            obj[-999].name="The Mysterious Figure";
+            obj[-999].dialoge.push_back("Finally You Wake Up");
+            obj[-999].dialoge.push_back("The kingdom needs you");
+            obj[-999].dialoge.push_back("This dungeons somehow spawned at our kindom");
+            obj[-999].dialoge.push_back("And The king ask You to explore this dungeon");
+            obj[-999].dialoge.push_back("?Are you agree with That?");
+            obj[-999].dialoge.push_back("-Noo?? Anyway you cant ran away you already here");
+            obj[-999].dialoge.push_back("+Interesting, i hope you enjoy your journey!");
+            obj[-999].dialoge.push_back("If you want to go outside find the Portal (F)");
+            obj[-999].dialoge.push_back("we are really proud of you!");
         }
         struct desc{
             int id; //same with number assign at map
@@ -175,7 +188,7 @@ class cave : public objects{
             place_object(3,max(3,(m+n)/3));
             place_object(4,4);
             place_object(9,10);
-            maps[n-1][m-1]=6;
+            place_object(6,1);
         }
 
         void place_object(int id,int amount){
@@ -204,6 +217,8 @@ class Player : public objects, public Items{
             return description;
         }
         int px=0,py=0;
+        int count_walk=0;
+        int count_enemy=0;
 };
 class Enemy : public objects {
     public :
@@ -307,20 +322,29 @@ class Screen : protected cave, public Items{
                 cnt+=1;
                 cout<<endl;
             }
-            cout<<"\nType 1 to Attack (Stamina -10)\nType 2 to use Punch (Stamina -50)\n";
+            cout<<"\nType 1 to Attack (Stamina -10)\nType 2 to use Punch (Stamina -50)\nType [imweak] to run\n";
             // vector<weapon> list=pl.get_weapon();
             // int idx=1;
             // for (weapon wp : list){
             //     cout<<idx<<" "<<wp.name<<endl;
             //     idx+=1;
             // }
-            cout<<log<<endl;
+            cout<<endl;
+            cout<<"\x1B[31m>>"+log+"\033[0m"<<endl;
+            cout<<endl;
             file.close();
             if (p.hp<=0)return false;
             return true;
         }
-        void finish_scene(){
+        void finish_scene(Player pe){
             system("clear");
+            if (pe.count_walk<5||pe.count_enemy==0){
+                cutscene("epilog1.txt",1);
+            } else if (pe.count_enemy==1){
+                cutscene("epilog2.txt",1);
+            } else {
+                cutscene("epilog.txt",1);
+            }
             ifstream file("assets/finish.txt");
             string s;
             while (getline(file,s)){
@@ -328,10 +352,17 @@ class Screen : protected cave, public Items{
                 cout<<endl;
             }
             file.close();
+            cout<<"Your Journey Has Ended Our Hero, "+pe.description.name<<endl;
+            cout<<"=================================================="<<endl;
+            cout<<"Your total moves        : "<<pe.count_walk<<endl;
+            cout<<"Enemy that you defeated : "<<pe.count_enemy<<endl;
+            cout<<"=================================================="<<endl;
+            cout<<"Your last level         : "<<pe.description.level<<endl;
+            cout<<"Thanks For Playing This Game"<<endl;
         }
-        void dialoge_scene(desc npc,string dialog){
+        void dialoge_scene(desc npc,string file_name,string dialog){
             system("clear");
-            ifstream file("assets/duck.txt");
+            ifstream file("assets/"+file_name);
             string s;
             while (getline(file,s)){
                 for (char c:s)cout<<c<<" ";
@@ -341,6 +372,21 @@ class Screen : protected cave, public Items{
             cout<<"==================================================================================================="<<endl;
             cout<<dialog<<endl;
             cout<<"==================================================================================================="<<endl;
+            file.close();
+        }
+        void cutscene(string scene,int time_scene){
+            system("clear");
+            ifstream file("assets/cutscene/"+scene);
+            string s;
+            while (getline(file,s)){
+                if (s=="[break]"){
+                    sleep(time_scene);
+                    system("clear");
+                    continue;
+                }
+                for (char c:s)cout<<c<<" ";
+                cout<<endl;
+            }
             file.close();
         }
 };
@@ -356,6 +402,7 @@ class Game : protected Screen{
             int cnt_dialog=0;
             int tx=-1,ty=-1;
             char dialoge_neutral='n';
+            string dialoge_object="duck.txt";
             Enemy enemy;
             Player player;
             player.add_weapon({"Mighty Sword",100,0});
@@ -383,7 +430,12 @@ class Game : protected Screen{
 
                     player.set_desc({player_id,name,"player",player_sym,100,1,100,100});
                     obj[player.description.id]=player.get_desc();
-                    scene=0;
+
+                    cutscene("prolog.txt",1);
+                    dialoge_object="mysterious.txt";
+                    npc_id=-999;
+                    cnt_dialog=0;
+                    scene=4;
                 } else if (scene==0){
                     update_position(player.px,player.py,player_id);
                     struct pos_f{
@@ -427,6 +479,7 @@ class Game : protected Screen{
                                 break;
                             } else if (obj_type=="npc"){
                                 scene=4;
+                                dialoge_object="duck.txt";
                                 npc_id=obj_id;
                                 log.push("You Talked with stranger...");
                                 dialoge_neutral='n';
@@ -439,7 +492,7 @@ class Game : protected Screen{
                             }
                         }
                     } else if (command=="u"||command=="U"||command=="d"||command=="D"||command=="l"||command=="L"||command=="r"||command=="R"){
-                        if (walk(command,player.px,player.py));
+                        if (walk(command,player.px,player.py))player.count_walk+=1;
                         else log.push("You have tried to take that path and failed...");
                     } else if (command=="exit"){
                         ofstream file("log/log.txt");
@@ -475,6 +528,9 @@ class Game : protected Screen{
                             log.push("You Attack "+enemy.description.name+", but the enemy use defense, Your stamina -50, damage 0");
                         }
                         player.description.stamina-=50;
+                    } else if (command=="[imweak]"){
+                        log.push("You weak and you decide to ran...");
+                        scene=0;
                     }
                     if (player.description.hp<=0||player.description.stamina<=0){
                         gameover_scene();
@@ -492,14 +548,21 @@ class Game : protected Screen{
                         maps[tx][ty]=0;
                         log.push("You have won against "+enemy.description.name);
                         scene=0;
+                        player.count_enemy+=1;
                     }
                 } else if (scene==3){
-                    log.push("You opened a chest and got Potion, adn then use it, your hp now full");
+                    if (rand()%2){
+                    log.push("You opened a chest and got Health Potion, and then use it, your hp now full");
                     player.description.hp=100;
+                    }
+                    else {
+                    log.push("You opened a chest and got Stamina Potion, and then use it, your stamina now full");
+                    player.description.stamina=100;
+                    }
                     maps[tx][ty]=0;
                     scene=0;
                 } else if (scene==4){
-                    maps[tx][ty]=0;
+                    if (npc_id!=-999)maps[tx][ty]=0;
                     if (cnt_dialog==obj[npc_id].dialoge.size()){
                         scene=0;
                         log.push("The conversation has ended.");
@@ -510,7 +573,7 @@ class Game : protected Screen{
                         cnt_dialog+=1;
                         continue;
                     }
-                    dialoge_scene(obj[npc_id],conver);
+                    dialoge_scene(obj[npc_id],dialoge_object,conver);
                     if (conver[0]!='?'){
                         cout<<"Type x to next "<<endl;
                         cin>>command;
@@ -531,14 +594,15 @@ class Game : protected Screen{
                         }
                     }
                 } else if (scene==5){
+
                     log.push("You end your journey...");
                     ofstream file("log/log.txt");
                         while (!log.empty()){
                             file<<log.top()<<'\n';
                             log.pop();
                         }
-                        file.close();
-                    finish_scene();
+                    file.close();
+                    finish_scene(player);
                     return;
                 }
             }
