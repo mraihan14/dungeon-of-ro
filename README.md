@@ -42,13 +42,14 @@ Dungeon Of RO is a simple Command-Line Interface (CLI) game built with C++, wher
 | 34 | Add a defense skill for enemies | ✅ |
 | 35 | Add static potions | ✅ |
 | 36 | Make items a separate class from the object class | ✅ |
+| 37 | Add finish object and finish scene | ✅ |
 
 ## 📈 Development Summary
 
 | **Metric** | **Count** |
 |:---|:---:|
-| 📋 Total Features | 36 |
-| ✅ Completed | 22 |
+| 📋 Total Features | 37 |
+| ✅ Completed | 23 |
 | ❌ Incomplete | 14 |
-| 📊 Completion Rate | 61.11% |
-| ⏳ Remaining | 38.89% |
+| 📊 Completion Rate | 62.16% |
+| ⏳ Remaining | 37.84% |

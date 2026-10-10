@@ -25,6 +25,9 @@ class objects{
             obj[9].dialoge.push_back("-How?? So silent here....");
             obj[9].dialoge.push_back("-If you think soo, okay then");
             obj[9].dialoge.push_back("Kwek Kwek Kwek Kwek Kwek");
+            obj[6].sym="F";
+            obj[6].name="Finish Portal";
+            obj[6].type="portal";
 
         }
         struct desc{
@@ -63,7 +66,7 @@ class cave : public objects{
     protected :
         int n=20;
         int m=50;
-        int maps_filter=0; //filter
+        int maps_filter=1; //filter
         vector<vector<int>> maps;
         vector<vector<bool>> vis;
         vector<vector<int>> filter;//Experimental
@@ -172,6 +175,7 @@ class cave : public objects{
             place_object(3,max(3,(m+n)/3));
             place_object(4,4);
             place_object(9,10);
+            maps[n-1][m-1]=6;
         }
 
         void place_object(int id,int amount){
@@ -315,7 +319,16 @@ class Screen : protected cave, public Items{
             if (p.hp<=0)return false;
             return true;
         }
-
+        void finish_scene(){
+            system("clear");
+            ifstream file("assets/finish.txt");
+            string s;
+            while (getline(file,s)){
+                for (char c:s)cout<<c<<" ";
+                cout<<endl;
+            }
+            file.close();
+        }
         void dialoge_scene(desc npc,string dialog){
             system("clear");
             ifstream file("assets/duck.txt");
@@ -419,6 +432,8 @@ class Game : protected Screen{
                                 dialoge_neutral='n';
                                 cnt_dialog=0;
                                 break;
+                            } else if (obj_type=="portal"){
+                                scene=5; 
                             } else {
                                 log.push("You cant interact with this object");
                             }
@@ -515,6 +530,16 @@ class Game : protected Screen{
                             cnt_dialog+=1;
                         }
                     }
+                } else if (scene==5){
+                    log.push("You end your journey...");
+                    ofstream file("log/log.txt");
+                        while (!log.empty()){
+                            file<<log.top()<<'\n';
+                            log.pop();
+                        }
+                        file.close();
+                    finish_scene();
+                    return;
                 }
             }
         }
